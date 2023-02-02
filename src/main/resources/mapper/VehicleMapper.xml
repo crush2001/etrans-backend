@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcl.etransbackend.mapper.VehicleMapper">
+
+    <resultMap type="com.wcl.etransbackend.domain.Vehicle" id="VehicleMap">
+        <result property="vehiclePlateNumber" column="vehicle_plate_number" jdbcType="VARCHAR"/>
+        <result property="vehicleType" column="vehicle_type" jdbcType="VARCHAR"/>
+        <result property="vehicleCapacity" column="vehicle_capacity" jdbcType="INTEGER"/>
+        <result property="vehicleStatus" column="vehicle_status" jdbcType="INTEGER"/>
+        <result property="vehicleRoute" column="vehicle_route" jdbcType="VARCHAR"/>
+        <result property="vehiclePurchaseTime" column="vehicle_purchase_time" jdbcType="TIMESTAMP"/>
+        <result property="vehicleDriver" column="vehicle_driver" jdbcType="VARCHAR"/>
+        <result column="count(1)" property="totalNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="queryAll" resultMap="VehicleMap">
+        select vehicle_plate_number,
+               vehicle_type,
+               vehicle_capacity,
+               vehicle_status,
+               vehicle_route,
+               vehicle_purchase_time,
+               vehicle_driver
+        from vehicle
+    </select>
+
+    <select id="queryAllByPage" resultMap="VehicleMap">
+        select * from vehicle
+    </select>
+
+    <select id="queryVehicleByPlateNum" resultMap="VehicleMap">
+        select * from vehicle
+        where vehicle_plate_number = #{vehiclePlateNumber}
+    </select>
+
+    <select id="queryVehicleByDriver" resultMap="VehicleMap">
+        select * from vehicle
+        where vehicle_driver = #{vehicleDriver}
+    </select>
+
+    <select id="queryGroupByVehicleRoute" resultMap="VehicleMap">
+        select vehicle_route,count(1) from vehicle
+        group by vehicle_route
+    </select>
+
+    <select id="queryGroupByVehicleStatus" resultMap="VehicleMap">
+        select vehicle_status,count(1) from vehicle
+        group by vehicle_status
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="VehicleMap">
+        select vehicle_plate_number,
+               vehicle_type,
+               vehicle_capacity,
+               vehicle_status,
+               vehicle_route,
+               vehicle_purchase_time,
+               vehicle_driver
+        from vehicle
+        where vehicle_plate_number = #{vehiclePlateNumber}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="VehicleMap">
+        select
+        vehicle_plate_number, vehicle_type, vehicle_capacity, vehicle_status, vehicle_route, vehicle_purchase_time,
+        vehicle_driver
+        from vehicle
+        <where>
+            <if test="vehiclePlateNumber != null and vehiclePlateNumber != ''">
+                and vehicle_plate_number = #{vehiclePlateNumber}
+            </if>
+            <if test="vehicleType != null and vehicleType != ''">
+                and vehicle_type = #{vehicleType}
+            </if>
+            <if test="vehicleCapacity != null">
+                and vehicle_capacity = #{vehicleCapacity}
+            </if>
+            <if test="vehicleStatus != null">
+                and vehicle_status = #{vehicleStatus}
+            </if>
+            <if test="vehicleRoute != null and vehicleRoute != ''">
+                and vehicle_route = #{vehicleRoute}
+            </if>
+            <if test="vehiclePurchaseTime != null">
+                and vehicle_purchase_time = #{vehiclePurchaseTime}
+            </if>
+            <if test="vehicleDriver != null and vehicleDriver != ''">
+                and vehicle_driver = #{vehicleDriver}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--获取车辆信息-->
+    <select id="gainVehicleInfo" resultMap="VehicleMap">
+        select distinct vehicle_plate_number
+        from vehicle
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from vehicle
+        <where>
+            <if test="vehiclePlateNumber != null and vehiclePlateNumber != ''">
+                and vehicle_plate_number = #{vehiclePlateNumber}
+            </if>
+            <if test="vehicleType != null and vehicleType != ''">
+                and vehicle_type = #{vehicleType}
+            </if>
+            <if test="vehicleCapacity != null">
+                and vehicle_capacity = #{vehicleCapacity}
+            </if>
+            <if test="vehicleStatus != null">
+                and vehicle_status = #{vehicleStatus}
+            </if>
+            <if test="vehicleRoute != null and vehicleRoute != ''">
+                and vehicle_route = #{vehicleRoute}
+            </if>
+            <if test="vehiclePurchaseTime != null">
+                and vehicle_purchase_time = #{vehiclePurchaseTime}
+            </if>
+            <if test="vehicleDriver != null and vehicleDriver != ''">
+                and vehicle_driver = #{vehicleDriver}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="vehiclePlateNumber" useGeneratedKeys="true">
+        insert into vehicle(vehicle_plate_number, vehicle_type, vehicle_capacity, vehicle_status, vehicle_route,
+                            vehicle_driver)
+        values (#{vehiclePlateNumber}, #{vehicleType}, #{vehicleCapacity}, #{vehicleStatus}, #{vehicleRoute}, #{vehicleDriver})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="vehiclePlateNumber" useGeneratedKeys="true">
+        insert into vehicle(vehicle_type, vehicle_capacity, vehicle_status, vehicle_route, vehicle_purchase_time,
+        vehicle_driver)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.vehicleType}, #{entity.vehicleCapacity}, #{entity.vehicleStatus}, #{entity.vehicleRoute},
+            #{entity.vehiclePurchaseTime}, #{entity.vehicleDriver})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="vehiclePlateNumber" useGeneratedKeys="true">
+        insert into vehicle(vehicle_type, vehicle_capacity, vehicle_status, vehicle_route, vehicle_purchase_time,
+        vehicle_driver)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.vehicleType}, #{entity.vehicleCapacity}, #{entity.vehicleStatus}, #{entity.vehicleRoute},
+            #{entity.vehiclePurchaseTime}, #{entity.vehicleDriver})
+        </foreach>
+        on duplicate key update
+        vehicle_type = values(vehicle_type),
+        vehicle_capacity = values(vehicle_capacity),
+        vehicle_status = values(vehicle_status),
+        vehicle_route = values(vehicle_route),
+        vehicle_purchase_time = values(vehicle_purchase_time),
+        vehicle_driver = values(vehicle_driver)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update vehicle
+        <set>
+            <if test="vehicleType != null and vehicleType != ''">
+                vehicle_type = #{vehicleType},
+            </if>
+            <if test="vehicleCapacity != null">
+                vehicle_capacity = #{vehicleCapacity},
+            </if>
+            <if test="vehicleStatus != null">
+                vehicle_status = #{vehicleStatus},
+            </if>
+            <if test="vehicleRoute != null and vehicleRoute != ''">
+                vehicle_route = #{vehicleRoute},
+            </if>
+            <if test="vehiclePurchaseTime != null">
+                vehicle_purchase_time = #{vehiclePurchaseTime},
+            </if>
+            <if test="vehicleDriver != null and vehicleDriver != ''">
+                vehicle_driver = #{vehicleDriver},
+            </if>
+        </set>
+        where vehicle_plate_number = #{vehiclePlateNumber}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from vehicle
+        where vehicle_plate_number = #{vehiclePlateNumber}
+    </delete>
+
+</mapper>
+
+

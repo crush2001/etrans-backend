@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcl.etransbackend.mapper.ScheduleMapper">
+
+    <resultMap type="com.wcl.etransbackend.domain.Schedule" id="ScheduleMap">
+        <result property="scheduledBus" column="scheduled_bus" jdbcType="VARCHAR"/>
+        <result property="scheduledTime" column="scheduled_time" jdbcType="TIMESTAMP"/>
+        <result property="scheduledId" column="scheduled_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="queryAll" resultMap="ScheduleMap">
+        select scheduled_bus,
+               scheduled_time,
+               scheduled_id
+        from schedule
+    </select>
+
+    <select id="queryAllByPage" resultMap="ScheduleMap">
+        select * from schedule
+    </select>
+
+    <select id="queryScheduleByVehicle" resultMap="ScheduleMap">
+        select * from schedule
+        where scheduled_bus = #{scheduledBus}
+    </select>
+
+    <select id="queryDriverSchedule" resultMap="ScheduleMap">
+        select * from schedule
+        <where>
+            scheduled_bus
+            <foreach collection="array" item="scheduledBus" index="index" open="in (" close=")" separator=",">
+                #{scheduledBus}
+            </foreach>
+        </where>
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ScheduleMap">
+        select scheduled_bus,
+               scheduled_time,
+               scheduled_id
+        from schedule
+        where scheduled_id = #{scheduledId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ScheduleMap">
+        select
+        scheduled_bus, scheduled_time, scheduled_id
+        from schedule
+        <where>
+            <if test="scheduledBus != null and scheduledBus != ''">
+                and scheduled_bus = #{scheduledBus}
+            </if>
+            <if test="scheduledTime != null">
+                and scheduled_time = #{scheduledTime}
+            </if>
+            <if test="scheduledId != null">
+                and scheduled_id = #{scheduledId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from schedule
+        <where>
+            <if test="scheduledBus != null and scheduledBus != ''">
+                and scheduled_bus = #{scheduledBus}
+            </if>
+            <if test="scheduledTime != null">
+                and scheduled_time = #{scheduledTime}
+            </if>
+            <if test="scheduledId != null">
+                and scheduled_id = #{scheduledId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="scheduledId" useGeneratedKeys="true">
+        insert into schedule(scheduled_bus, scheduled_time)
+        values (#{scheduledBus}, #{scheduledTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="scheduledId" useGeneratedKeys="true">
+        insert into schedule(scheduled_bus, scheduled_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.scheduledBus}, #{entity.scheduledTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="scheduledId" useGeneratedKeys="true">
+        insert into schedule(scheduled_bus, scheduled_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.scheduledBus}, #{entity.scheduledTime})
+        </foreach>
+        on duplicate key update
+        scheduled_bus = values(scheduled_bus),
+        scheduled_time = values(scheduled_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update schedule
+        <set>
+            <if test="scheduledBus != null and scheduledBus != ''">
+                scheduled_bus = #{scheduledBus},
+            </if>
+            <if test="scheduledTime != null">
+                scheduled_time = #{scheduledTime},
+            </if>
+        </set>
+        where scheduled_id = #{scheduledId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from schedule
+        where scheduled_id = #{scheduledId}
+    </delete>
+</mapper>
+
+

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcl.etransbackend.mapper.AnnouncementMapper">
+
+    <resultMap type="com.wcl.etransbackend.domain.Announcement" id="AnnouncementMap">
+        <result property="announcementId" column="announcement_id" jdbcType="INTEGER"/>
+        <result property="announcementTitle" column="announcement_title" jdbcType="VARCHAR"/>
+        <result property="announcementContent" column="announcement_content" jdbcType="VARCHAR"/>
+        <result property="announcementPublisher" column="announcement_publisher" jdbcType="VARCHAR"/>
+        <result property="announcementPublishTime" column="announcement_publish_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="queryAll" resultMap="AnnouncementMap">
+        select announcement_id,
+               announcement_title,
+               announcement_content,
+               announcement_publisher,
+               announcement_publish_time
+        from announcement
+    </select>
+
+    <select id="queryAllByPage" resultMap="AnnouncementMap">
+        select * from announcement
+    </select>
+
+    <select id="queryAnnouncementByTitle" resultMap="AnnouncementMap">
+        select * from announcement
+        where announcement_title like concat(concat("%",#{announcementTitle}),"%")
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="AnnouncementMap">
+        select announcement_id,
+               announcement_title,
+               announcement_content,
+               announcement_publisher,
+               announcement_publish_time
+        from announcement
+        where announcement_id = #{announcementId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="AnnouncementMap">
+        select
+        announcement_id, announcement_title, announcement_content, announcement_publisher, announcement_publish_time
+        from announcement
+        <where>
+            <if test="announcementId != null">
+                and announcement_id = #{announcementId}
+            </if>
+            <if test="announcementTitle != null and announcementTitle != ''">
+                and announcement_title = #{announcementTitle}
+            </if>
+            <if test="announcementContent != null and announcementContent != ''">
+                and announcement_content = #{announcementContent}
+            </if>
+            <if test="announcementPublisher != null and announcementPublisher != ''">
+                and announcement_publisher = #{announcementPublisher}
+            </if>
+            <if test="announcementPublishTime != null">
+                and announcement_publish_time = #{announcementPublishTime}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from announcement
+        <where>
+            <if test="announcementId != null">
+                and announcement_id = #{announcementId}
+            </if>
+            <if test="announcementTitle != null and announcementTitle != ''">
+                and announcement_title = #{announcementTitle}
+            </if>
+            <if test="announcementContent != null and announcementContent != ''">
+                and announcement_content = #{announcementContent}
+            </if>
+            <if test="announcementPublisher != null and announcementPublisher != ''">
+                and announcement_publisher = #{announcementPublisher}
+            </if>
+            <if test="announcementPublishTime != null">
+                and announcement_publish_time = #{announcementPublishTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="announcementId" useGeneratedKeys="true">
+        insert into announcement(announcement_title, announcement_content, announcement_publisher)
+        values (#{announcementTitle}, #{announcementContent}, #{announcementPublisher})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="announcementId" useGeneratedKeys="true">
+        insert into announcement(announcement_title, announcement_content, announcement_publisher,
+        announcement_publish_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.announcementTitle}, #{entity.announcementContent}, #{entity.announcementPublisher},
+            #{entity.announcementPublishTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="announcementId" useGeneratedKeys="true">
+        insert into announcement(announcement_title, announcement_content, announcement_publisher,
+        announcement_publish_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.announcementTitle}, #{entity.announcementContent}, #{entity.announcementPublisher},
+            #{entity.announcementPublishTime})
+        </foreach>
+        on duplicate key update
+        announcement_title = values(announcement_title),
+        announcement_content = values(announcement_content),
+        announcement_publisher = values(announcement_publisher),
+        announcement_publish_time = values(announcement_publish_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update announcement
+        <set>
+            <if test="announcementTitle != null and announcementTitle != ''">
+                announcement_title = #{announcementTitle},
+            </if>
+            <if test="announcementContent != null and announcementContent != ''">
+                announcement_content = #{announcementContent},
+            </if>
+            <if test="announcementPublisher != null and announcementPublisher != ''">
+                announcement_publisher = #{announcementPublisher},
+            </if>
+            <if test="announcementPublishTime != null">
+                announcement_publish_time = #{announcementPublishTime},
+            </if>
+        </set>
+        where announcement_id = #{announcementId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from announcement
+        where announcement_id = #{announcementId}
+    </delete>
+
+</mapper>
+
+

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcl.etransbackend.mapper.RouteMapper">
+
+    <resultMap type="com.wcl.etransbackend.domain.Route" id="RouteMap">
+        <result property="routeNumber" column="route_number" jdbcType="VARCHAR"/>
+        <result property="routeStartingStation" column="route_starting_station" jdbcType="VARCHAR"/>
+        <result property="routeTerminalStation" column="route_terminal_station" jdbcType="VARCHAR"/>
+        <result property="routeStations" column="route_stations" jdbcType="VARCHAR"/>
+        <result property="routeStartingTime" column="route_starting_time" jdbcType="VARCHAR"/>
+        <result property="routeTerminalTime" column="route_terminal_time" jdbcType="VARCHAR"/>
+        <result property="routeOpenupDate" column="route_openup_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="queryAll" resultMap="RouteMap">
+        select route_number,
+               route_starting_station,
+               route_terminal_station,
+               route_stations,
+               route_starting_time,
+               route_terminal_time,
+               route_openup_date
+        from route
+    </select>
+
+    <select id="queryAllByPage" resultMap="RouteMap">
+        select * from route
+    </select>
+
+    <select id="queryRouteByNumber" resultMap="RouteMap">
+        select * from route
+        where route_number like concat(concat("%",#{routeNumber}),"%")
+    </select>
+
+    <select id="queryDriverRoute" resultMap="RouteMap">
+        select * from route
+        <where>
+            route_number
+            <foreach collection="array" item="routeNumber" index="index" open="in (" close=")" separator=",">
+                #{routeNumber}
+            </foreach>
+        </where>
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="RouteMap">
+        select route_number,
+               route_starting_station,
+               route_terminal_station,
+               route_stations,
+               route_starting_time,
+               route_terminal_time,
+               route_openup_date
+        from route
+        where route_number = #{routeNumber}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="RouteMap">
+        select
+        route_number, route_starting_station, route_terminal_station, route_stations, route_starting_time,
+        route_terminal_time, route_openup_date
+        from route
+        <where>
+            <if test="routeNumber != null and routeNumber != ''">
+                and route_number = #{routeNumber}
+            </if>
+            <if test="routeStartingStation != null and routeStartingStation != ''">
+                and route_starting_station = #{routeStartingStation}
+            </if>
+            <if test="routeTerminalStation != null and routeTerminalStation != ''">
+                and route_terminal_station = #{routeTerminalStation}
+            </if>
+            <if test="routeStations != null and routeStations != ''">
+                and route_stations = #{routeStations}
+            </if>
+            <if test="routeStartingTime != null">
+                and route_starting_time = #{routeStartingTime}
+            </if>
+            <if test="routeTerminalTime != null">
+                and route_terminal_time = #{routeTerminalTime}
+            </if>
+            <if test="routeOpenupDate != null">
+                and route_openup_date = #{routeOpenupDate}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--获取线路信息-->
+    <select id="gainRouteInfo" resultMap="RouteMap">
+        select distinct route_number
+        from route
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from route
+        <where>
+            <if test="routeNumber != null and routeNumber != ''">
+                and route_number = #{routeNumber}
+            </if>
+            <if test="routeStartingStation != null and routeStartingStation != ''">
+                and route_starting_station = #{routeStartingStation}
+            </if>
+            <if test="routeTerminalStation != null and routeTerminalStation != ''">
+                and route_terminal_station = #{routeTerminalStation}
+            </if>
+            <if test="routeStations != null and routeStations != ''">
+                and route_stations = #{routeStations}
+            </if>
+            <if test="routeStartingTime != null">
+                and route_starting_time = #{routeStartingTime}
+            </if>
+            <if test="routeTerminalTime != null">
+                and route_terminal_time = #{routeTerminalTime}
+            </if>
+            <if test="routeOpenupDate != null">
+                and route_openup_date = #{routeOpenupDate}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="routeNumber" useGeneratedKeys="true">
+        insert into route(route_number, route_starting_station, route_terminal_station, route_stations, route_starting_time,
+                          route_terminal_time)
+        values (#{routeNumber}, #{routeStartingStation}, #{routeTerminalStation}, #{routeStations}, #{routeStartingTime},
+                #{routeTerminalTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="routeNumber" useGeneratedKeys="true">
+        insert into route(route_starting_station, route_terminal_station, route_stations, route_starting_time,
+        route_terminal_time, route_openup_date)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.routeStartingStation}, #{entity.routeTerminalStation}, #{entity.routeStations},
+            #{entity.routeStartingTime}, #{entity.routeTerminalTime}, #{entity.routeOpenupDate})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="routeNumber" useGeneratedKeys="true">
+        insert into route(route_starting_station, route_terminal_station, route_stations, route_starting_time,
+        route_terminal_time, route_openup_date)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.routeStartingStation}, #{entity.routeTerminalStation}, #{entity.routeStations},
+            #{entity.routeStartingTime}, #{entity.routeTerminalTime}, #{entity.routeOpenupDate})
+        </foreach>
+        on duplicate key update
+        route_starting_station = values(route_starting_station),
+        route_terminal_station = values(route_terminal_station),
+        route_stations = values(route_stations),
+        route_starting_time = values(route_starting_time),
+        route_terminal_time = values(route_terminal_time),
+        route_openup_date = values(route_openup_date)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update route
+        <set>
+            <if test="routeStartingStation != null and routeStartingStation != ''">
+                route_starting_station = #{routeStartingStation},
+            </if>
+            <if test="routeTerminalStation != null and routeTerminalStation != ''">
+                route_terminal_station = #{routeTerminalStation},
+            </if>
+            <if test="routeStations != null and routeStations != ''">
+                route_stations = #{routeStations},
+            </if>
+            <if test="routeStartingTime != null">
+                route_starting_time = #{routeStartingTime},
+            </if>
+            <if test="routeTerminalTime != null">
+                route_terminal_time = #{routeTerminalTime},
+            </if>
+            <if test="routeOpenupDate != null">
+                route_openup_date = #{routeOpenupDate},
+            </if>
+        </set>
+        where route_number = #{routeNumber}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from route
+        where route_number = #{routeNumber}
+    </delete>
+
+</mapper>
+
+

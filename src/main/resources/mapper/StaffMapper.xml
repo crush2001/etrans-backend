@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcl.etransbackend.mapper.StaffMapper">
+
+    <resultMap type="com.wcl.etransbackend.domain.Staff" id="StaffMap">
+        <result property="staffAccount" column="staff_account" jdbcType="VARCHAR"/>
+        <result property="staffPassword" column="staff_password" jdbcType="VARCHAR"/>
+        <result property="staffTrueName" column="staff_true_name" jdbcType="VARCHAR"/>
+        <result property="staffPosition" column="staff_position" jdbcType="VARCHAR"/>
+        <result property="staffPhoneNumber" column="staff_phone_number" jdbcType="VARCHAR"/>
+        <result property="staffIdNumber" column="staff_id_number" jdbcType="VARCHAR"/>
+        <result property="staffGender" column="staff_gender" jdbcType="VARCHAR"/>
+        <result property="staffBirthday" column="staff_birthday" jdbcType="TIMESTAMP"/>
+        <result property="staffAddress" column="staff_address" jdbcType="VARCHAR"/>
+        <result property="staffJoinDate" column="staff_join_date" jdbcType="TIMESTAMP"/>
+        <result property="staffStatus" column="staff_status" jdbcType="INTEGER"/>
+        <result column="count(1)" property="totalNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="queryAll" resultMap="StaffMap">
+        select staff_account,
+               staff_password,
+               staff_true_name,
+               staff_position,
+               staff_phone_number,
+               staff_id_number,
+               staff_gender,
+               staff_birthday,
+               staff_address,
+               staff_join_date,
+               staff_status
+        from staff
+    </select>
+
+    <select id="queryAllByPage" resultMap="StaffMap">
+        select * from staff
+    </select>
+
+    <select id="queryByTrueName" resultMap="StaffMap">
+        select * from staff
+        where staff_true_name like concat(concat("%",#{staffTrueName}),"%")
+    </select>
+
+    <select id="queryGroupByStaffPosition" resultMap="StaffMap">
+        select staff_position,count(1) from staff
+        group by staff_position
+    </select>
+
+    <select id="queryGroupByStaffStatus" resultMap="StaffMap">
+        select staff_status,count(1) from staff
+        group by staff_status
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="StaffMap">
+        select staff_account,
+               staff_password,
+               staff_true_name,
+               staff_position,
+               staff_phone_number,
+               staff_id_number,
+               staff_gender,
+               staff_birthday,
+               staff_address,
+               staff_join_date,
+               staff_status
+        from staff
+        where staff_account = #{staffAccount}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="StaffMap">
+        select
+        staff_account, staff_password, staff_true_name, staff_position, staff_phone_number, staff_id_number,
+        staff_gender, staff_birthday, staff_address, staff_join_date, staff_status
+        from staff
+        <where>
+            <if test="staffAccount != null and staffAccount != ''">
+                and staff_account = #{staffAccount}
+            </if>
+            <if test="staffPassword != null and staffPassword != ''">
+                and staff_password = #{staffPassword}
+            </if>
+            <if test="staffTrueName != null and staffTrueName != ''">
+                and staff_true_name = #{staffTrueName}
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                and staff_position = #{staffPosition}
+            </if>
+            <if test="staffPhoneNumber != null and staffPhoneNumber != ''">
+                and staff_phone_number = #{staffPhoneNumber}
+            </if>
+            <if test="staffIdNumber != null and staffIdNumber != ''">
+                and staff_id_number = #{staffIdNumber}
+            </if>
+            <if test="staffGender != null">
+                and staff_gender = #{staffGender}
+            </if>
+            <if test="staffBirthday != null">
+                and staff_birthday = #{staffBirthday}
+            </if>
+            <if test="staffAddress != null and staffAddress != ''">
+                and staff_address = #{staffAddress}
+            </if>
+            <if test="staffJoinDate != null">
+                and staff_join_date = #{staffJoinDate}
+            </if>
+            <if test="staffStatus != null">
+                and staff_status = #{staffStatus}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--获取员工信息-->
+    <select id="gainStaffInfo" resultMap="StaffMap">
+        select distinct staff_account
+        from staff
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from staff
+        <where>
+            <if test="staffAccount != null and staffAccount != ''">
+                and staff_account = #{staffAccount}
+            </if>
+            <if test="staffPassword != null and staffPassword != ''">
+                and staff_password = #{staffPassword}
+            </if>
+            <if test="staffTrueName != null and staffTrueName != ''">
+                and staff_true_name = #{staffTrueName}
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                and staff_position = #{staffPosition}
+            </if>
+            <if test="staffPhoneNumber != null and staffPhoneNumber != ''">
+                and staff_phone_number = #{staffPhoneNumber}
+            </if>
+            <if test="staffIdNumber != null and staffIdNumber != ''">
+                and staff_id_number = #{staffIdNumber}
+            </if>
+            <if test="staffGender != null">
+                and staff_gender = #{staffGender}
+            </if>
+            <if test="staffBirthday != null">
+                and staff_birthday = #{staffBirthday}
+            </if>
+            <if test="staffAddress != null and staffAddress != ''">
+                and staff_address = #{staffAddress}
+            </if>
+            <if test="staffJoinDate != null">
+                and staff_join_date = #{staffJoinDate}
+            </if>
+            <if test="staffStatus != null">
+                and staff_status = #{staffStatus}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="staffAccount" useGeneratedKeys="true">
+        insert into staff(staff_account, staff_password, staff_true_name, staff_position, staff_phone_number, staff_id_number,
+                          staff_gender, staff_birthday, staff_address, staff_status)
+        values (#{staffAccount}, #{staffPassword}, #{staffTrueName}, #{staffPosition}, #{staffPhoneNumber}, #{staffIdNumber},
+                #{staffGender}, #{staffBirthday}, #{staffAddress}, #{staffStatus})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="staffAccount" useGeneratedKeys="true">
+        insert into staff(staff_password, staff_true_name, staff_position, staff_phone_number, staff_id_number,
+        staff_gender, staff_birthday, staff_address, staff_join_date, staff_status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.staffPassword}, #{entity.staffTrueName}, #{entity.staffPosition}, #{entity.staffPhoneNumber},
+            #{entity.staffIdNumber}, #{entity.staffGender}, #{entity.staffBirthday}, #{entity.staffAddress},
+            #{entity.staffJoinDate}, #{entity.staffStatus})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="staffAccount" useGeneratedKeys="true">
+        insert into staff(staff_password, staff_true_name, staff_position, staff_phone_number, staff_id_number,
+        staff_gender, staff_birthday, staff_address, staff_join_date, staff_status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.staffPassword}, #{entity.staffTrueName}, #{entity.staffPosition}, #{entity.staffPhoneNumber},
+            #{entity.staffIdNumber}, #{entity.staffGender}, #{entity.staffBirthday}, #{entity.staffAddress},
+            #{entity.staffJoinDate}, #{entity.staffStatus})
+        </foreach>
+        on duplicate key update
+        staff_password = values(staff_password),
+        staff_true_name = values(staff_true_name),
+        staff_position = values(staff_position),
+        staff_phone_number = values(staff_phone_number),
+        staff_id_number = values(staff_id_number),
+        staff_gender = values(staff_gender),
+        staff_birthday = values(staff_birthday),
+        staff_address = values(staff_address),
+        staff_join_date = values(staff_join_date),
+        staff_status = values(staff_status)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update staff
+        <set>
+            <if test="staffPassword != null and staffPassword != ''">
+                staff_password = #{staffPassword},
+            </if>
+            <if test="staffTrueName != null and staffTrueName != ''">
+                staff_true_name = #{staffTrueName},
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                staff_position = #{staffPosition},
+            </if>
+            <if test="staffPhoneNumber != null and staffPhoneNumber != ''">
+                staff_phone_number = #{staffPhoneNumber},
+            </if>
+            <if test="staffIdNumber != null and staffIdNumber != ''">
+                staff_id_number = #{staffIdNumber},
+            </if>
+            <if test="staffGender != null">
+                staff_gender = #{staffGender},
+            </if>
+            <if test="staffBirthday != null">
+                staff_birthday = #{staffBirthday},
+            </if>
+            <if test="staffAddress != null and staffAddress != ''">
+                staff_address = #{staffAddress},
+            </if>
+            <if test="staffJoinDate != null">
+                staff_join_date = #{staffJoinDate},
+            </if>
+            <if test="staffStatus != null">
+                staff_status = #{staffStatus},
+            </if>
+        </set>
+        where staff_account = #{staffAccount}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from staff
+        where staff_account = #{staffAccount}
+    </delete>
+
+</mapper>
+
+

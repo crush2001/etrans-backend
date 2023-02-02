@@ -1,0 +1,60 @@
+server:
+  # 后端服务端口
+  port: 8080
+  max-http-header-size: 100000
+
+spring:
+  # 数据源
+  datasource:
+    # 数据库URL
+    url: jdbc:mysql://localhost:3306/etrans?useSSL=false&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    # 数据库用户名
+    username: root
+    # 数据库密码
+    password: ilyDM010104,.!?
+    # 数据库JDBC驱动
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  main:
+    allow-circular-references: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_empty
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+sa-token:
+  # token名称（同时也是cookie名称）
+  token-name: Authorization
+
+  # token有效期，单位秒，-1表示永不过期
+  timeout: 2592000
+
+  # token临时有效期（指定时间内无操作就视为token过期），单位秒
+  activity-timeout: -1
+
+  # 是否允许同一账号并发登录（为false时新登录挤掉旧登陆）
+  is-concurrent: true
+
+  # 在多人登录同一账号时，是否共用一个token (为false时每次登录新建一个token)
+  is-share: false
+
+  # token风格
+  token-style: uuid
+
+  # 是否输出操作日志
+  is-log: false
+
+  # 是否从cookie中读取token
+  is-read-cookie: false
+
+  # 是否从head中读取token
+  is-read-header: true
+
+pagehelper:
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcl.etransbackend.mapper.WorkorderMapper">
+
+    <resultMap type="com.wcl.etransbackend.domain.Workorder" id="WorkorderMap">
+        <result property="workorderId" column="workorder_id" jdbcType="INTEGER"/>
+        <result property="workorderPublisher" column="workorder_publisher" jdbcType="VARCHAR"/>
+        <result property="workorderTitle" column="workorder_title" jdbcType="VARCHAR"/>
+        <result property="workorderContent" column="workorder_content" jdbcType="VARCHAR"/>
+        <result property="workorderType" column="workorder_type" jdbcType="INTEGER"/>
+        <result property="workorderPublishTime" column="workorder_publish_time" jdbcType="TIMESTAMP"/>
+        <result property="workorderStatus" column="workorder_status" jdbcType="INTEGER"/>
+        <result column="count(1)" property="totalNum" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="queryAll" resultMap="WorkorderMap">
+        select workorder_id,
+               workorder_publisher,
+               workorder_title,
+               workorder_content,
+               workorder_type,
+               workorder_publish_time,
+               workorder_status
+        from workorder
+    </select>
+
+    <select id="queryAllByPage" resultMap="WorkorderMap">
+        select * from workorder
+    </select>
+
+    <select id="queryOwnWorkorderByPage" resultMap="WorkorderMap">
+        select * from workorder
+        where workorder_publisher = #{workorderPublisher}
+    </select>
+
+    <select id="queryWorkorderByStaff" resultMap="WorkorderMap">
+        select * from workorder
+        where workorder_publisher = #{workorderPublisher}
+    </select>
+
+    <select id="queryWorkorderByStaffAndTitle" resultMap="WorkorderMap">
+        select * from workorder
+        where workorder_publisher = #{workorderPublisher} and workorder_title like concat(concat("%",#{workorderTitle}),"%")
+    </select>
+
+    <select id="queryGroupByWorkorderType" resultMap="WorkorderMap">
+        select workorder_type,count(1) from workorder
+        group by workorder_type
+    </select>
+
+    <select id="queryGroupByWorkorderStatus" resultMap="WorkorderMap">
+        select workorder_status,count(1) from workorder
+        group by workorder_status
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="WorkorderMap">
+        select workorder_id,
+               workorder_publisher,
+               workorder_title,
+               workorder_content,
+               workorder_type,
+               workorder_publish_time,
+               workorder_status
+        from workorder
+        where workorder_id = #{workorderId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="WorkorderMap">
+        select
+        workorder_id, workorder_publisher, workorder_title, workorder_content, workorder_type, workorder_publish_time,
+        workorder_status
+        from workorder
+        <where>
+            <if test="workorderId != null">
+                and workorder_id = #{workorderId}
+            </if>
+            <if test="workorderPublisher != null and workorderPublisher != ''">
+                and workorder_publisher = #{workorderPublisher}
+            </if>
+            <if test="workorderTitle != null and workorderTitle != ''">
+                and workorder_title = #{workorderTitle}
+            </if>
+            <if test="workorderContent != null and workorderContent != ''">
+                and workorder_content = #{workorderContent}
+            </if>
+            <if test="workorderType != null">
+                and workorder_type = #{workorderType}
+            </if>
+            <if test="workorderPublishTime != null">
+                and workorder_publish_time = #{workorderPublishTime}
+            </if>
+            <if test="workorderStatus != null">
+                and workorder_status = #{workorderStatus}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from workorder
+        <where>
+            <if test="workorderId != null">
+                and workorder_id = #{workorderId}
+            </if>
+            <if test="workorderPublisher != null and workorderPublisher != ''">
+                and workorder_publisher = #{workorderPublisher}
+            </if>
+            <if test="workorderTitle != null and workorderTitle != ''">
+                and workorder_title = #{workorderTitle}
+            </if>
+            <if test="workorderContent != null and workorderContent != ''">
+                and workorder_content = #{workorderContent}
+            </if>
+            <if test="workorderType != null">
+                and workorder_type = #{workorderType}
+            </if>
+            <if test="workorderPublishTime != null">
+                and workorder_publish_time = #{workorderPublishTime}
+            </if>
+            <if test="workorderStatus != null">
+                and workorder_status = #{workorderStatus}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="workorderId" useGeneratedKeys="true">
+        insert into workorder(workorder_publisher, workorder_title, workorder_content, workorder_type, workorder_status)
+        values (#{workorderPublisher}, #{workorderTitle}, #{workorderContent}, #{workorderType}, #{workorderStatus})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="workorderId" useGeneratedKeys="true">
+        insert into workorder(workorder_publisher, workorder_title, workorder_content, workorder_type,
+        workorder_publish_time, workorder_status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.workorderPublisher}, #{entity.workorderTitle}, #{entity.workorderContent},
+            #{entity.workorderType}, #{entity.workorderPublishTime}, #{entity.workorderStatus})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="workorderId" useGeneratedKeys="true">
+        insert into workorder(workorder_publisher, workorder_title, workorder_content, workorder_type,
+        workorder_publish_time, workorder_status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.workorderPublisher}, #{entity.workorderTitle}, #{entity.workorderContent},
+            #{entity.workorderType}, #{entity.workorderPublishTime}, #{entity.workorderStatus})
+        </foreach>
+        on duplicate key update
+        workorder_publisher = values(workorder_publisher),
+        workorder_title = values(workorder_title),
+        workorder_content = values(workorder_content),
+        workorder_type = values(workorder_type),
+        workorder_publish_time = values(workorder_publish_time),
+        workorder_status = values(workorder_status)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update workorder
+        <set>
+            <if test="workorderPublisher != null and workorderPublisher != ''">
+                workorder_publisher = #{workorderPublisher},
+            </if>
+            <if test="workorderTitle != null and workorderTitle != ''">
+                workorder_title = #{workorderTitle},
+            </if>
+            <if test="workorderContent != null and workorderContent != ''">
+                workorder_content = #{workorderContent},
+            </if>
+            <if test="workorderType != null">
+                workorder_type = #{workorderType},
+            </if>
+            <if test="workorderPublishTime != null">
+                workorder_publish_time = #{workorderPublishTime},
+            </if>
+            <if test="workorderStatus != null">
+                workorder_status = #{workorderStatus},
+            </if>
+        </set>
+        where workorder_id = #{workorderId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from workorder
+        where workorder_id = #{workorderId}
+    </delete>
+
+</mapper>
+
+
