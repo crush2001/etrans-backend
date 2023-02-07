@@ -32,6 +32,31 @@
             <foreach collection="array" item="scheduledBus" index="index" open="in (" close=")" separator=",">
                 #{scheduledBus}
             </foreach>
+            and TO_DAYS(scheduled_time) = TO_DAYS(NOW())
+        </where>
+    </select>
+
+    <select id="queryRecentSchedule" resultMap="ScheduleMap">
+        select * from schedule
+        <where>
+            scheduled_bus
+            <foreach collection="array" item="scheduledBus" index="index" open="in (" close=")" separator=",">
+                #{scheduledBus}
+            </foreach>
+            and TO_DAYS(NOW()) - TO_DAYS(scheduled_time) <![CDATA[<=]]> 365
+            and TO_DAYS(NOW()) - TO_DAYS(scheduled_time) <![CDATA[>]]> 0
+        </where>
+    </select>
+
+    <select id="queryFutureSchedule" resultMap="ScheduleMap">
+        select * from schedule
+        <where>
+            scheduled_bus
+            <foreach collection="array" item="scheduledBus" index="index" open="in (" close=")" separator=",">
+                #{scheduledBus}
+            </foreach>
+            and TO_DAYS(scheduled_time) - TO_DAYS(NOW()) <![CDATA[<=]]> 365
+            and TO_DAYS(scheduled_time) - TO_DAYS(NOW()) <![CDATA[>=]]> 0
         </where>
     </select>
 

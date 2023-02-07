@@ -61,6 +61,16 @@ public class ScheduleController {
         return ResponseEntity.ok(this.scheduleService.queryDriverSchedule(scheduledBus));
     }
 
+    @GetMapping("/queryRecentSchedule")
+    public ResponseEntity<List> queryRecentSchedule(String[] scheduledBus) {
+        return ResponseEntity.ok(this.scheduleService.queryRecentSchedule(scheduledBus));
+    }
+
+    @GetMapping("/queryFutureSchedule")
+    public ResponseEntity<List> queryFutureSchedule(String[] scheduledBus) {
+        return ResponseEntity.ok(this.scheduleService.queryFutureSchedule(scheduledBus));
+    }
+
     /**
      * 新增数据
      *

@@ -29,6 +29,10 @@ public interface ScheduleMapper {
 
     List<Schedule> queryDriverSchedule(String[] scheduledBus);
 
+    List<Schedule> queryRecentSchedule(String[] scheduledBus);
+
+    List<Schedule> queryFutureSchedule(String[] scheduledBus);
+
     /**
      * 通过ID查询单条数据
      *

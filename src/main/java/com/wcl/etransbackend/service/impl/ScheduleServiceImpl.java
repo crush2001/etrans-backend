@@ -60,6 +60,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         return this.scheduleMapper.queryDriverSchedule(scheduledBus);
     }
 
+    @Override
+    public List<Schedule> queryRecentSchedule(String[] scheduledBus) {
+        return this.scheduleMapper.queryRecentSchedule(scheduledBus);
+    }
+
+    @Override
+    public List<Schedule> queryFutureSchedule(String[] scheduledBus) {
+        return this.scheduleMapper.queryFutureSchedule(scheduledBus);
+    }
+
     /**
      * 新增数据
      *

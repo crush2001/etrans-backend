@@ -22,6 +22,9 @@ public interface ScheduleService {
 
     List<Schedule> queryDriverSchedule(String[] scheduledBus);
 
+    List<Schedule> queryRecentSchedule(String[] scheduledBus);
+
+    List<Schedule> queryFutureSchedule(String[] scheduledBus);
     // 分页查询
     PageInfo<Schedule> queryAllByPage(Integer pageNum, Integer pageSize);
 
