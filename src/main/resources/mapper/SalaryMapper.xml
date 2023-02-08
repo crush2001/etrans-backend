@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcl.etransbackend.mapper.SalaryMapper">
+
+    <resultMap type="com.wcl.etransbackend.domain.Salary" id="SalaryMap">
+        <result property="baseSalary" column="base_salary" jdbcType="NUMERIC"/>
+        <result property="workOvertimeSalary" column="work_overtime_salary" jdbcType="NUMERIC"/>
+        <result property="workingYearsSalary" column="working_years_salary" jdbcType="NUMERIC"/>
+        <result property="assessmentAward" column="assessment_award" jdbcType="NUMERIC"/>
+        <result property="oilSavingAward" column="oil_saving_award" jdbcType="NUMERIC"/>
+        <result property="festivalFee" column="festival_fee" jdbcType="NUMERIC"/>
+        <result property="yearEndBonus" column="year_end_bonus" jdbcType="NUMERIC"/>
+        <result property="endowmentInsurance" column="endowment_insurance" jdbcType="NUMERIC"/>
+        <result property="medicalInsurance" column="medical_insurance" jdbcType="NUMERIC"/>
+        <result property="unemploymentInsurance" column="unemployment_insurance" jdbcType="NUMERIC"/>
+        <result property="employmentInjuryInsurance" column="employment_injury_insurance" jdbcType="NUMERIC"/>
+        <result property="maternityInsurance" column="maternity_insurance" jdbcType="NUMERIC"/>
+        <result property="accumulationFund" column="accumulation_fund" jdbcType="NUMERIC"/>
+        <result property="totalSalary" column="total_salary" jdbcType="NUMERIC"/>
+        <result property="staffAccount" column="staff_account" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="queryAll" resultMap="SalaryMap">
+        select
+          base_salary, work_overtime_salary, working_years_salary, assessment_award, oil_saving_award, festival_fee, year_end_bonus, endowment_insurance, medical_insurance, unemployment_insurance, employment_injury_insurance, maternity_insurance, accumulation_fund, total_salary, staff_account
+        from salary
+    </select>
+
+    <select id="queryAllByPage" resultMap="SalaryMap">
+        select * from salary
+    </select>
+
+    <select id="querySalaryByStaffAccount" resultMap="SalaryMap">
+        select * from salary
+        where staff_account = #{staffAccount}
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SalaryMap">
+        select
+          base_salary, work_overtime_salary, working_years_salary, assessment_award, oil_saving_award, festival_fee, year_end_bonus, endowment_insurance, medical_insurance, unemployment_insurance, employment_injury_insurance, maternity_insurance, accumulation_fund, total_salary, staff_account
+        from salary
+        where staff_account = #{staffAccount}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SalaryMap">
+        select
+          base_salary, work_overtime_salary, working_years_salary, assessment_award, oil_saving_award, festival_fee, year_end_bonus, endowment_insurance, medical_insurance, unemployment_insurance, employment_injury_insurance, maternity_insurance, accumulation_fund, total_salary, staff_account
+        from salary
+        <where>
+            <if test="baseSalary != null">
+                and base_salary = #{baseSalary}
+            </if>
+            <if test="workOvertimeSalary != null">
+                and work_overtime_salary = #{workOvertimeSalary}
+            </if>
+            <if test="workingYearsSalary != null">
+                and working_years_salary = #{workingYearsSalary}
+            </if>
+            <if test="assessmentAward != null">
+                and assessment_award = #{assessmentAward}
+            </if>
+            <if test="oilSavingAward != null">
+                and oil_saving_award = #{oilSavingAward}
+            </if>
+            <if test="festivalFee != null">
+                and festival_fee = #{festivalFee}
+            </if>
+            <if test="yearEndBonus != null">
+                and year_end_bonus = #{yearEndBonus}
+            </if>
+            <if test="endowmentInsurance != null">
+                and endowment_insurance = #{endowmentInsurance}
+            </if>
+            <if test="medicalInsurance != null">
+                and medical_insurance = #{medicalInsurance}
+            </if>
+            <if test="unemploymentInsurance != null">
+                and unemployment_insurance = #{unemploymentInsurance}
+            </if>
+            <if test="employmentInjuryInsurance != null">
+                and employment_injury_insurance = #{employmentInjuryInsurance}
+            </if>
+            <if test="maternityInsurance != null">
+                and maternity_insurance = #{maternityInsurance}
+            </if>
+            <if test="accumulationFund != null">
+                and accumulation_fund = #{accumulationFund}
+            </if>
+            <if test="totalSalary != null">
+                and total_salary = #{totalSalary}
+            </if>
+            <if test="staffAccount != null and staffAccount != ''">
+                and staff_account = #{staffAccount}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from salary
+        <where>
+            <if test="baseSalary != null">
+                and base_salary = #{baseSalary}
+            </if>
+            <if test="workOvertimeSalary != null">
+                and work_overtime_salary = #{workOvertimeSalary}
+            </if>
+            <if test="workingYearsSalary != null">
+                and working_years_salary = #{workingYearsSalary}
+            </if>
+            <if test="assessmentAward != null">
+                and assessment_award = #{assessmentAward}
+            </if>
+            <if test="oilSavingAward != null">
+                and oil_saving_award = #{oilSavingAward}
+            </if>
+            <if test="festivalFee != null">
+                and festival_fee = #{festivalFee}
+            </if>
+            <if test="yearEndBonus != null">
+                and year_end_bonus = #{yearEndBonus}
+            </if>
+            <if test="endowmentInsurance != null">
+                and endowment_insurance = #{endowmentInsurance}
+            </if>
+            <if test="medicalInsurance != null">
+                and medical_insurance = #{medicalInsurance}
+            </if>
+            <if test="unemploymentInsurance != null">
+                and unemployment_insurance = #{unemploymentInsurance}
+            </if>
+            <if test="employmentInjuryInsurance != null">
+                and employment_injury_insurance = #{employmentInjuryInsurance}
+            </if>
+            <if test="maternityInsurance != null">
+                and maternity_insurance = #{maternityInsurance}
+            </if>
+            <if test="accumulationFund != null">
+                and accumulation_fund = #{accumulationFund}
+            </if>
+            <if test="totalSalary != null">
+                and total_salary = #{totalSalary}
+            </if>
+            <if test="staffAccount != null and staffAccount != ''">
+                and staff_account = #{staffAccount}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="staffAccount" useGeneratedKeys="true">
+        insert into salary(staff_account, base_salary, work_overtime_salary, working_years_salary, assessment_award, oil_saving_award, festival_fee, year_end_bonus, endowment_insurance, medical_insurance, unemployment_insurance, employment_injury_insurance, maternity_insurance, accumulation_fund, total_salary)
+        values (#{staffAccount}, #{baseSalary}, #{workOvertimeSalary}, #{workingYearsSalary}, #{assessmentAward}, #{oilSavingAward}, #{festivalFee}, #{yearEndBonus}, #{endowmentInsurance}, #{medicalInsurance}, #{unemploymentInsurance}, #{employmentInjuryInsurance}, #{maternityInsurance}, #{accumulationFund}, #{totalSalary})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="staffAccount" useGeneratedKeys="true">
+        insert into salary(base_salary, work_overtime_salary, working_years_salary, assessment_award, oil_saving_award, festival_fee, year_end_bonus, endowment_insurance, medical_insurance, unemployment_insurance, employment_injury_insurance, maternity_insurance, accumulation_fund, total_salary)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.baseSalary}, #{entity.workOvertimeSalary}, #{entity.workingYearsSalary}, #{entity.assessmentAward}, #{entity.oilSavingAward}, #{entity.festivalFee}, #{entity.yearEndBonus}, #{entity.endowmentInsurance}, #{entity.medicalInsurance}, #{entity.unemploymentInsurance}, #{entity.employmentInjuryInsurance}, #{entity.maternityInsurance}, #{entity.accumulationFund}, #{entity.totalSalary})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="staffAccount" useGeneratedKeys="true">
+        insert into salary(base_salary, work_overtime_salary, working_years_salary, assessment_award, oil_saving_award, festival_fee, year_end_bonus, endowment_insurance, medical_insurance, unemployment_insurance, employment_injury_insurance, maternity_insurance, accumulation_fund, total_salary)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.baseSalary}, #{entity.workOvertimeSalary}, #{entity.workingYearsSalary}, #{entity.assessmentAward}, #{entity.oilSavingAward}, #{entity.festivalFee}, #{entity.yearEndBonus}, #{entity.endowmentInsurance}, #{entity.medicalInsurance}, #{entity.unemploymentInsurance}, #{entity.employmentInjuryInsurance}, #{entity.maternityInsurance}, #{entity.accumulationFund}, #{entity.totalSalary})
+        </foreach>
+        on duplicate key update
+        base_salary = values(base_salary),
+        work_overtime_salary = values(work_overtime_salary),
+        working_years_salary = values(working_years_salary),
+        assessment_award = values(assessment_award),
+        oil_saving_award = values(oil_saving_award),
+        festival_fee = values(festival_fee),
+        year_end_bonus = values(year_end_bonus),
+        endowment_insurance = values(endowment_insurance),
+        medical_insurance = values(medical_insurance),
+        unemployment_insurance = values(unemployment_insurance),
+        employment_injury_insurance = values(employment_injury_insurance),
+        maternity_insurance = values(maternity_insurance),
+        accumulation_fund = values(accumulation_fund),
+        total_salary = values(total_salary)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update salary
+        <set>
+            <if test="baseSalary != null">
+                base_salary = #{baseSalary},
+            </if>
+            <if test="workOvertimeSalary != null">
+                work_overtime_salary = #{workOvertimeSalary},
+            </if>
+            <if test="workingYearsSalary != null">
+                working_years_salary = #{workingYearsSalary},
+            </if>
+            <if test="assessmentAward != null">
+                assessment_award = #{assessmentAward},
+            </if>
+            <if test="oilSavingAward != null">
+                oil_saving_award = #{oilSavingAward},
+            </if>
+            <if test="festivalFee != null">
+                festival_fee = #{festivalFee},
+            </if>
+            <if test="yearEndBonus != null">
+                year_end_bonus = #{yearEndBonus},
+            </if>
+            <if test="endowmentInsurance != null">
+                endowment_insurance = #{endowmentInsurance},
+            </if>
+            <if test="medicalInsurance != null">
+                medical_insurance = #{medicalInsurance},
+            </if>
+            <if test="unemploymentInsurance != null">
+                unemployment_insurance = #{unemploymentInsurance},
+            </if>
+            <if test="employmentInjuryInsurance != null">
+                employment_injury_insurance = #{employmentInjuryInsurance},
+            </if>
+            <if test="maternityInsurance != null">
+                maternity_insurance = #{maternityInsurance},
+            </if>
+            <if test="accumulationFund != null">
+                accumulation_fund = #{accumulationFund},
+            </if>
+            <if test="totalSalary != null">
+                total_salary = #{totalSalary},
+            </if>
+        </set>
+        where staff_account = #{staffAccount}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from salary where staff_account = #{staffAccount}
+    </delete>
+
+</mapper>
+
+
