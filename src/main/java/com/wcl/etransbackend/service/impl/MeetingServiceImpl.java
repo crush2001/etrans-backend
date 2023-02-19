@@ -38,8 +38,16 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public List<Meeting> queryByMeetingTheme(String meetingTheme) {
-        return this.meetingMapper.queryByMeetingTheme(meetingTheme);
+    public List<Meeting> queryByMeetingTheme(String singleParticipant,String meetingTheme) {
+        return this.meetingMapper.queryByMeetingTheme(singleParticipant, meetingTheme);
+    }
+
+    @Override
+    public PageInfo<Meeting> queryMyMeeting(String singleParticipant,Integer pageNum,Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Meeting> meeting = meetingMapper.queryMyMeeting(singleParticipant);
+        PageInfo<Meeting> pageInfo = new PageInfo<>(meeting);
+        return pageInfo;
     }
 
     /**

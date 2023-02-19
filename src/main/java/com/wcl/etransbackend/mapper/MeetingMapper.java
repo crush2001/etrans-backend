@@ -21,9 +21,11 @@ public interface MeetingMapper {
      */
     List<Meeting> queryAll();
 
+    List<Meeting> queryMyMeeting(String singleParticipant);
+
     List<Meeting> queryAllByPage();
 
-    List<Meeting> queryByMeetingTheme(String meetingTheme);
+    List<Meeting> queryByMeetingTheme(String singleParticipant,String meetingTheme);
 
     /**
      * 通过ID查询单条数据

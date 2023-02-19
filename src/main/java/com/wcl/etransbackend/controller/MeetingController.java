@@ -51,8 +51,15 @@ public class MeetingController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List> queryByMeetingTheme(String meetingTheme) {
-        return ResponseEntity.ok(this.meetingService.queryByMeetingTheme(meetingTheme));
+    public ResponseEntity<List> queryByMeetingTheme(String singleParticipant,String meetingTheme) {
+        return ResponseEntity.ok(this.meetingService.queryByMeetingTheme(singleParticipant, meetingTheme));
+    }
+
+    @GetMapping("/queryMyMeeting")
+    public PageInfo<Meeting> queryMyMeeting(@RequestParam(value = "pageNum",required = false,defaultValue = "1")Integer pageNum,
+                                            @RequestParam(value = "pageSize",required = false,defaultValue = "3")Integer pageSize,
+                                            String singleParticipant) {
+        return this.meetingService.queryMyMeeting(singleParticipant,pageNum,pageSize);
     }
 
     /**

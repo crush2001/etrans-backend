@@ -24,8 +24,20 @@
     </select>
 
     <select id="queryByMeetingTheme" resultMap="MeetingMap">
-        select * from meeting
-        where meeting_theme like concat(concat("%",#{meetingTheme}),"%")
+        select a.meeting_id,a.meeting_theme,a.meeting_details,a.meeting_type,a.meeting_time,a.meeting_arranger,substring_index(substring_index(a.meeting_participant,',',b.help_topic_id+1),',',-1) meeting_participant
+        from meeting a join mysql.help_topic b
+        on b.help_topic_id <![CDATA[<]]> (length(a.meeting_participant) - length(replace(a.meeting_participant,',',''))+1)
+        where substring_index(substring_index(a.meeting_participant,',',b.help_topic_id+1),',',-1)=#{singleParticipant}
+        and a.meeting_theme like concat(concat("%",#{meetingTheme}),"%")
+        order by a.meeting_id
+    </select>
+
+    <select id="queryMyMeeting" resultMap="MeetingMap">
+        select a.meeting_id,a.meeting_theme,a.meeting_details,a.meeting_type,a.meeting_time,a.meeting_arranger,substring_index(substring_index(a.meeting_participant,',',b.help_topic_id+1),',',-1) meeting_participant
+        from meeting a join mysql.help_topic b
+        on b.help_topic_id <![CDATA[<]]> (length(a.meeting_participant) - length(replace(a.meeting_participant,',',''))+1)
+        where substring_index(substring_index(a.meeting_participant,',',b.help_topic_id+1),',',-1)=#{singleParticipant}
+        order by a.meeting_id
     </select>
 
     <!--查询单个-->

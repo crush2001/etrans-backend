@@ -21,7 +21,9 @@ public interface MeetingService {
 
     PageInfo<Meeting> queryAllByPage(Integer pageNum, Integer pageSize);
 
-    List<Meeting> queryByMeetingTheme(String meetingTheme);
+    List<Meeting> queryByMeetingTheme(String singleParticipant,String meetingTheme);
+
+    PageInfo<Meeting> queryMyMeeting(String singleParticipant,Integer pageNum,Integer pageSize);
 
     /**
      * 通过ID查询单条数据
