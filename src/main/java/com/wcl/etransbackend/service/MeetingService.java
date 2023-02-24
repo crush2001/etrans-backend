@@ -23,6 +23,8 @@ public interface MeetingService {
 
     List<Meeting> queryByMeetingTheme(String singleParticipant,String meetingTheme);
 
+    List<Meeting> queryByTheme(String meetingTheme);
+
     PageInfo<Meeting> queryMyMeeting(String singleParticipant,Integer pageNum,Integer pageSize);
 
     /**

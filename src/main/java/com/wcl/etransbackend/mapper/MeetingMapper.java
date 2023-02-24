@@ -27,6 +27,8 @@ public interface MeetingMapper {
 
     List<Meeting> queryByMeetingTheme(String singleParticipant,String meetingTheme);
 
+    List<Meeting> queryByTheme(String meetingTheme);
+
     /**
      * 通过ID查询单条数据
      *

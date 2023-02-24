@@ -43,6 +43,11 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
+    public List<Meeting> queryByTheme(String meetingTheme) {
+        return this.meetingMapper.queryByTheme(meetingTheme);
+    }
+
+    @Override
     public PageInfo<Meeting> queryMyMeeting(String singleParticipant,Integer pageNum,Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Meeting> meeting = meetingMapper.queryMyMeeting(singleParticipant);
