@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonResult {
+public class CommonResult { //通用结果类
     private static final String CODE_SUCCESS = "200";
     private static final String CODE_SYS_ERROR = "500";
 

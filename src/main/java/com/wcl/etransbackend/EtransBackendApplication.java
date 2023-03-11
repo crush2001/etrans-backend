@@ -14,7 +14,7 @@ public class EtransBackendApplication {
     }
 
     @Bean
-    public ConfigurableServletWebServerFactory webServerFactory() {
+    public ConfigurableServletWebServerFactory webServerFactory() { //解决特殊符号报错问题
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
         factory.addConnectorCustomizers(connector -> connector.setProperty("relaxedQueryChars", "\"<>[\\]^`{|}"));
         return factory;
